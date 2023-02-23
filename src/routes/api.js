@@ -1,6 +1,6 @@
 const express = require('express');
-const con = require('../db/init');
 const router = express.Router();
+const { getNotes } = require('../db/getNotes');
 
 router.get('/', (req, res) => {
     res.send('Hello World!');
@@ -56,13 +56,35 @@ router.get('/getNotes', (req, res) => {
         });
     }
 
-    con.query(`SELECT * FROM notes WHERE grade = '${grade}' AND chapter = '${chapter}' AND chapter_id = '${chapter_id}' AND topic = '${topic}' AND topic_id = '${topic_id}';`, (err, result) => {
-        if (err) {
-            console.log(`Error occured as: ${err.message}`);
-            throw err;
+    var sql = `
+        SELECT * FROM notes WHERE 
+        grade = '${grade}' AND 
+        chapter = '${chapter}' AND 
+        chapter_id = '${chapter_id}' 
+        AND topic = '${topic}' 
+        AND topic_id = '${topic_id}';
+    `;
+    
+    return con.query(sql, (err, result) => {
+
+        if (!err) {
+            console.log(notes);
+            if (notes.length === 0) {
+                return res.status(404).json({
+                    error: {
+                        message: 'No notes found'
+                    }
+                });
+            }
+            res.send('Hello World!');
         } else {
-            console.log(result);
+            return res.status(500).json({
+                error: {
+                    message: 'Internal Server Error'
+                }
+            });
         }
+    
     });
 });
 
