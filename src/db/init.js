@@ -1,11 +1,13 @@
+require('dotenv').config();
 var mysql = require('mysql');
 
 var con = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: ""
+  host: process.env.MYSQL_DB_HOST || "localhost",
+  user: process.env.MYSQL_DB_USER || "root",
+  password: process.env.MYSQL_DB_PASSWORD || ""
 });
 
+// trying to connect to mysql
 con.connect(err => {
   if (err) {
     console.log(`Error occured as: ${err.message}`);
@@ -14,7 +16,8 @@ con.connect(err => {
   console.log("Connected to MySQL!");
 });
 
-con.query(`CREATE DATABASE IF NOT EXISTS notes;`, (err, result) => {
+// Creating database if it doesn't exist
+con.query(`CREATE DATABASE IF NOT EXISTS ${process.env.MYSQL_DB_NAME};`, (err, result) => {
     if (err) {
         console.log(`Error occured as: ${err.message}`);
         throw err;
@@ -23,7 +26,8 @@ con.query(`CREATE DATABASE IF NOT EXISTS notes;`, (err, result) => {
     }
 });
 
-con.query(`USE notes;`, (err, result) => {
+// Selecting the database
+con.query(`USE ${process.env.MYSQL_DB_NAME};`, (err, result) => {
     if (err) {
         console.log(`Error occured as: ${err.message}`);
         throw err;
@@ -32,6 +36,7 @@ con.query(`USE notes;`, (err, result) => {
     }
 });
 
+// Creating table if it doesn't exist
 con.query(`CREATE TABLE IF NOT EXISTS notes (
     id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
     grade varchar(255) NOT NULL,
