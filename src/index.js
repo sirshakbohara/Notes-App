@@ -1,12 +1,17 @@
 const express = require('express');
 const app = express();
 
-const port = 3000;
+const apiRouter = require('./routes/api');
+
+app.use(express.json())
+app.use('/api', apiRouter);
+
+const PORT = 3000;
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
-app.listen(port, () => {
-    console.log(`App listening at http://localhost:${port}`);
+app.listen(PORT, () => {
+    console.log(`App listening at http://localhost:${PORT}`);
 });
